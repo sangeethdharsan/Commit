@@ -20,6 +20,8 @@ jobs:
       - name: Get Commit Changes
         id: changes
         uses: octokit/request-action@v2.x
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         with:
           route: GET /repos/${{ github.repository }}/commits/${{ steps.commit.outputs.sha }}/files
 
