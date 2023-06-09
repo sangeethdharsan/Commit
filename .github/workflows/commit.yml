@@ -1,0 +1,27 @@
+name: Get Committed Changes
+
+on:
+  push:
+    branches:
+      - main  # Replace with your branch name
+
+jobs:
+  get_changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Get Commit SHA
+        id: commit
+        run: echo "::set-output name=sha::${{ github.sha }}"
+
+      - name: Get Commit Changes
+        id: changes
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/commits/${{ steps.commit.outputs.sha }}/files
+
+      - name: Display Changes
+        run: echo "${{ steps.changes.outputs.data }}"
