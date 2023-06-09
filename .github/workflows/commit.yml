@@ -1,29 +1,18 @@
-name: Get Committed Changes
+name: Retrieve PR Commits
 
-on:
-  push:
-    branches:
-      - main  # Replace with your branch name
+on: [pull_request]
 
 jobs:
-  get_changes:
+  pr_commits:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Get Commit SHA
-        id: commit
-        run: echo "::set-output name=sha::${{ github.sha }}"
-
-      - name: Get Commit Changes
-        id: changes
-        uses: octokit/request-action@v2.x
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-        with:
-          route: GET /repos/${{ github.repository }}/commits/${{ steps.commit.outputs.sha }}/files
-
-      - name: Display Changes
-        run: echo "${{ steps.changes.outputs.data }}"
+    - name: Check out code
+      uses: actions/checkout@v2
+    
+    - name: Retrieve PR Commits
+      run: |
+        PR_NUMBER=$(echo "${{ github.event.pull_request.url }}" | awk -F/ '{print $NF}')
+        API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits"
+        PR_COMMITS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" $API_URL)
+        echo $PR_COMMITS
