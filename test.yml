@@ -26,3 +26,7 @@ jobs:
       run: |
         vendor/bin/phpcs -i
         git diff $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT --name-only --diff-filter=ACM | xargs vendor/bin/phpcs --error-severity=1 --warning-severity=0 --standard=Magento2
+
+
+
+
