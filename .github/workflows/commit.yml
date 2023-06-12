@@ -7,7 +7,12 @@ on:
 jobs:
   get_files:
     runs-on: ubuntu-latest
+    container:
+     image: magento/magento-cloud-docker-php:8.1-fpm-1.3.2
     steps:
+      - name: Installing git and curl
+        run: |    
+          apt-get update && apt-get install -y unzip git
       - name: Check out code
         uses: actions/checkout@v2
       
@@ -25,3 +30,11 @@ jobs:
         run: |
           echo "Files modified in PR commit:"
           echo "${{ steps.pr_files.outputs.files }}"
+      - name: Install composer dependencies
+        run: |
+         curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+         composer self-update -- 2.1.1
+         composer install --ignore-platform-req=ext-sodium
+      - name: Run Testsuite
+        run: |
+          vendor/bin/phpcs -i
