@@ -1,9 +1,8 @@
 name: Get PR Commit Files
 on:
   pull_request:
-    types:
-      - synchronize
-
+    branches:
+      - "**"
 jobs:
   get_files:
     runs-on: ubuntu-latest
